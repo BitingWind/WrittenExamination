@@ -1,4 +1,4 @@
-package huaweiOJ;
+//package huaweiOJ;
 import java.util.*;
 public class AveAge {
 	public static void main(String[] args){
