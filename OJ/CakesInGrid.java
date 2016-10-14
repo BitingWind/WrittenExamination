@@ -1,3 +1,6 @@
+/*
+ * netease 2017 Internal recommendation WrittenExamination
+*/
 package huaweiOJ;
 import java.util.*;
 public class CakesInGrid {
