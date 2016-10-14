@@ -6,4 +6,4 @@ They come from
 > * newcoder   http://www.nowcoder.com/activity/oj
 > * coding interviews (At offer)
 
-**Note: Please comment out the packge information in OJ if you'd use the code.**
+**Note: Please comment out the packge information in some folder such as OJ if you'd use the code.**
