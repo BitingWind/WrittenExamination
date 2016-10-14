@@ -1,4 +1,4 @@
-package basic;
+package linkedlist;
 import java.util.Stack;
 public class Stack2Queue<T> {
 	public Stack<T> spush, spop;
@@ -14,7 +14,7 @@ public class Stack2Queue<T> {
 			return spop.pop();
 		}
 		else if(spush.size() != 0){
-			int size = spush.size();//！！！！！size()一直在变，不能放在循环内！切记！！
+			int size = spush.size();//锛侊紒锛侊紒锛乻ize()涓�鐩村湪鍙橈紝涓嶈兘鏀惧湪寰幆鍐咃紒鍒囪锛侊紒
 			for(int i = 0;i< size;i++)
 				spop.push(spush.pop());
 			return spop.pop();
