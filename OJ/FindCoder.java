@@ -1,10 +1,13 @@
-package huaweiOJ;
+/*
+ * Huawei WE find the number of "coder"(ignore case sensitivity) in given strings.
+*/
+//package huaweiOJ;
 import java.util.*;
 import java.util.regex.*;
 public class FindCoder {
 	private static final String PAT = "[cC][oO][Dd][Ee][Rr]";
 	public static String[] find(String[] A,int n){
-		//²¢ĞĞÊı×é£¬Ò»´æË÷Òı£¬Ò»´æ²éÕÒÊı
+		//å¹¶è¡Œæ•°ç»„ï¼Œä¸€å­˜ç´¢å¼•ï¼Œä¸€å­˜æŸ¥æ‰¾æ•°
 		int[] indexs = new int[n];
 		int[] numCoders = new int[n];
 		for(int i = 0; i < n; i++){
@@ -13,13 +16,13 @@ public class FindCoder {
 		}
 		sort(numCoders,indexs);  
 		int N = 0;
-		//²éÕÒº¬¡°coder¡±¸öÊıµÄ·ÇÁãÏî£¬ÉıĞòµÄµ¹ÖÃ²éÕÒ
+		//æŸ¥æ‰¾å«â€œcoderâ€ä¸ªæ•°çš„éé›¶é¡¹ï¼Œå‡åºçš„å€’ç½®æŸ¥æ‰¾
 		for(int i = n -1; i >=0; i--){
 			if(numCoders[indexs[i]] == 0) break;
 			N++;
 		}
 		String[] result = new String[N];
-		//ÓÉºóÏòÇ°¶ÁÈ¡
+		//ç”±åå‘å‰è¯»å–
 		for(int i = 0; i < N; i++){
 			result[i] = A[indexs[n-1-i]];
 		}
@@ -30,16 +33,16 @@ public class FindCoder {
 		a[i] = a[j];
 		a[j] = temp;
 	}
-	//²åÈëÅÅĞò£¬ÉıĞò£¬µ¹ÖÃÎÈ¶¨ĞÔ°æ±¾
+	//æ’å…¥æ’åºï¼Œå‡åºï¼Œå€’ç½®ç¨³å®šæ€§ç‰ˆæœ¬
 	private static void sort(int[] a,int[] indexs){
 		for(int i = 0; i < a.length; i++){
-			for(int j = i; j >= 1 && a[j] <= a[j-1];j--){ //"<="ÖĞµÄ= ÎªÊÊÓ¦±¾ÌâËù¼Ó£¡£¡£¡£¡
+			for(int j = i; j >= 1 && a[j] <= a[j-1];j--){ //"<="ä¸­çš„= ä¸ºé€‚åº”æœ¬é¢˜æ‰€åŠ ï¼ï¼ï¼ï¼
 				exch(a,j,j-1);
 				exch(indexs,j,j-1);
 			}	
 		}
 	}
-	//Pattern°æ±¾,À´×Ôjava¿âÕıÔò±í´ïÊ½Æ¥Åä
+	//Patternç‰ˆæœ¬,æ¥è‡ªjavaåº“æ­£åˆ™è¡¨è¾¾å¼åŒ¹é…
 	private static int numOfCoder(String txt){
 		Pattern pat = Pattern.compile(PAT);
 		Matcher m = pat.matcher(txt);
@@ -47,7 +50,7 @@ public class FindCoder {
 		while(m.find()) result++; 
 		return result++;
 	}
-	//±©Á¦×Ó×Ö·û´®²éÕÒ£¬·ÇÏÔÊ½»ØÍË°æ±¾£¬ºöÂÔtxtµÄ´óĞ¡Ğ´
+	//æš´åŠ›å­å­—ç¬¦ä¸²æŸ¥æ‰¾ï¼Œéæ˜¾å¼å›é€€ç‰ˆæœ¬ï¼Œå¿½ç•¥txtçš„å¤§å°å†™
 	private static int numOfCoder(String txt,String pat){
 		int i, N = txt.length();
 		int j, M = pat.length();
@@ -55,7 +58,7 @@ public class FindCoder {
 		for(i = 0; i <= N - M;i++){
 			for(j = 0; j < M; j++){
 				int iC = (int)txt.charAt(i + j);
-				if(iC <= (int)'Z' && iC >= (int)'A') //´óĞ´ -> Ğ¡Ğ´
+				if(iC <= (int)'Z' && iC >= (int)'A') //å¤§å†™ -> å°å†™
 					iC += 32;		
 				if((int)pat.charAt(j) != iC) break;
 			}
