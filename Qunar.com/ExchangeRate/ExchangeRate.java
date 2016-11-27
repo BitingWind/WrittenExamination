@@ -6,6 +6,11 @@
  *
  *   Note: This Java project depend on POI library that is configured in pom.xml for Maven project.
  *
+ *   API :
+ *          Static Method :
+ *              void  exportExchangeRateBySelectDir(int within = 30)
+ *              void  exportExchangeRate(int within = 30, String dir = ".")
+ *
  *   Reference  http://docs.oracle.com/javase/8/docs/api/
  *              http://www.cnblogs.com/zhuawang/archive/2012/12/08/2809380.html
  *              http://poi.apache.org/apidocs/index.html
@@ -14,6 +19,7 @@
 import java.net.URLConnection;
 import java.net.URL;
 import java.io.PrintWriter;
+import java.io.File;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.FileOutputStream;
@@ -30,7 +36,64 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 
+import javax.swing.JFileChooser;
+
 public class ExchangeRate {
+
+    /**
+     * overload default within value : 30
+     */
+    public static void exportExchangeRateBySelectDir(){
+        exportExchangeRateBySelectDir(30);
+    }
+
+    /**
+     * select directory to store Excel file
+     * @param within
+     * @throws IllegalArgumentException
+     */
+    public static void exportExchangeRateBySelectDir(int within) throws IllegalArgumentException{
+        String dir = selectRootDir();
+        if(dir == null)
+            throw new IllegalStateException("您未选择目录 !");
+        exportExchangeRate(within,dir + "\\");
+    }
+
+    /**
+     * overload default value : within = 30, dir = "."
+     */
+    public static void exportExchangeRate(){
+        exportExchangeRate(30,".");
+    }
+    /**
+     * export exchange rate to specify directory  as Excel file
+     * @param within
+     *          the number that within specify days
+     * @param dir
+     *          the directory to store the Excel file
+     * @throws IllegalArgumentException
+     */
+    public static void exportExchangeRate(int within,String dir) throws IllegalArgumentException{
+        final String ACTION_URL_STRING =
+                "http://www.safe.gov.cn/AppStructured/view/project_RMBQuery.action";
+        if(within <= 0)
+            throw new IllegalArgumentException("请提供大于零的天数 !");
+        if(dir.equals(".")) dir = "";
+        else if(!new File(dir).isDirectory())
+            throw new IllegalArgumentException("请提供正确的目录 ！");
+        // make POST parameter
+        String day_ago_30 = getDateString(within);
+        String yesterday = getDateString(1);
+        // the format POST parameter is got from google chrome
+        String postParam = "projectBean.startDate=" + day_ago_30 + "&projectBean.endDate=" + yesterday + "&queryYN=true";
+
+        // get remote data
+        String dataRemote = sendPost(ACTION_URL_STRING, postParam);
+        // extract rate data
+        ArrayList<ArrayList<String>> rateTable = getRate(dataRemote);
+        // export rate data by selecting the currencies and naming the excel file for
+        exportExcel(rateTable, "美元；日元；港元；欧元；英镑", dir + "人民币汇率中间价.xls");
+    }
 
     /**
      * Get the Date String
@@ -203,25 +266,25 @@ public class ExchangeRate {
         }
         return result;
     }
-
+    /**
+     * set rootDir by visual file chooser
+     * @return  1 : select complete,
+     *           0 : select fail (may cause by closing the window)
+     */
+    private static String selectRootDir(){
+        String result = null;
+        JFileChooser chooser = new JFileChooser();
+        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+        int returnVal = chooser.showOpenDialog(null);
+        if(returnVal == JFileChooser.APPROVE_OPTION) {
+            result = chooser.getSelectedFile().getAbsolutePath();
+        }
+        return result;
+    }
     public static void main(String[] args) {
-
-        // action url for getting data
-        final String ACTION_URL_STRING =
-                "http://www.safe.gov.cn/AppStructured/view/project_RMBQuery.action";
-
-        // make POST parameter
-        String day_ago_30 = getDateString(30);
-        String yesterday = getDateString(1);
-        // the format POST parameter is got from google chrome
-        String postParam = "projectBean.startDate=" + day_ago_30 + "&projectBean.endDate=" + yesterday + "&queryYN=true";
-
-        // get remote data
-        String dataRemote = sendPost(ACTION_URL_STRING, postParam);
-        // extract rate data
-        ArrayList<ArrayList<String>> rateTable = getRate(dataRemote);
-        // export rate data by selecting the currencies and naming the excel file for
-        exportExcel(rateTable, "美元；日元；港元；欧元；英镑", "人民币汇率中间价.xls");
+        // exportExchangeRate(30,"H:\\com\\");
+        // exportExchangeRate();
+        exportExchangeRateBySelectDir();
 
     }
 }
