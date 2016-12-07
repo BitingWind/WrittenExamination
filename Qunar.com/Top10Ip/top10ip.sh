@@ -6,11 +6,14 @@
 
 # NOTE: The default Root Directory of tomcat is CATALINA_HOME !!! You can rewrite it for yourself!!!
 
+
 length=0
 declare -a iparray
 declare -a timearray
+
 for logfile in $( ls $CATALINA_HOME/logs | grep ".*access_log.*")
 do
+  # Get the IP information from log file, splited by the space " "
   for ip in $(gawk '{print $1}' $CATALINA_HOME/$logfile)
   do
       find=0
@@ -31,6 +34,9 @@ do
 done
 
 printf "Rank    Ip      \tAccessed Times\n"
+
+#Handle with the repetition rank condition
+
 rank=1
 sum=0
 while [ $sum -lt 10 ]
